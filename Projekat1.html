@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReSell Hub</title>
+    <link rel="stylesheet" href="Projekat.css">
+</head>
+<body>
+
+    <!-- TOAST NOTIFIKACIJA -->
+    <div id="toast" class="toast-skriven"></div>
+
+    <header class="header">
+        <div class="logo" onclick="prikažiSekciju('pocetna')">ReSell Hub</div>
+        
+        <nav class="nav" id="nav-meni"></nav>
+
+        <div class="header-desno">
+            <div class="search-box">
+                <input type="text" id="search" onkeydown="proveriEnter(event)" placeholder="Pretraži brendove...">
+                <button class="search-btn" onclick="pretražiProizvode()">🔍</button>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+            <a href="#" class="korpa-link" onclick="prikažiSekciju('korpa')">
+                🛒 <span id="cartCount">0</span>
+            </a>
+            <!-- Profil dugme -->
+            <button id="profil-nav-btn" class="profil-btn" onclick="prikažiSekciju('profil')">👤 Profil</button>
+        </div>
+    </header>
+
+    <!-- POČETNA SEKCIJA -->
+    <section id="pocetna-sekcija" class="page-section">
+        <div class="hero">
+            <h1>Originalni proizvodi po najboljim cenama</h1>
+            <p>Premium patike, parfemi, dukserice i trenerke na jednom mestu.</p>
+            <div class="hero-buttons">
+                <button class="cta-btn" onclick="filtrirajKategoriju('Patike')">Patike</button>
+                <button class="cta-btn" onclick="filtrirajKategoriju('Parfemi')">Parfemi</button>
+                <button class="cta-btn" onclick="filtrirajKategoriju('Dukserice')">Dukserice</button>
+                <button class="cta-btn" onclick="filtrirajKategoriju('Trenerke')">Trenerke</button>
+            </div>
+        </div>
+        
+        <div class="kontakt-sekcija">
+            <h2 class="sekcija-naslov">Kontaktiraj Nas</h2>
+            <div class="kontakt-kontejner">
+                <div class="kontakt-info">
+                    <h3>Imaš pitanja ili želiš saradnju?</h3>
+                    <p>Tu smo za tebe. Piši nam direktno ili nas poseti na društvenim mrežama.</p>
+                    <div class="kontakt-detalji">
+                        <p>📧 <strong>Email:</strong> podrška@resellhub.rs</p>
+                        <p>🕒 <strong>Radno vreme:</strong> Pon - Pet: 09:00 - 20:00</p>
+                        <p>📍 <strong>Lokacija:</strong> Beograd, Srbija</p>
+                    </div>
+                </div>
+                <div class="kontakt-forma">
+                    <input type="email" placeholder="Tvoj Email" id="kontakt-email">
+                    <textarea placeholder="Tvoja poruka..." id="kontakt-poruka" rows="4"></textarea>
+                    <button class="glavno-dugme" onclick="posaljiPoruku()">Pošalji poruku</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROIZVODI SEKCIJA -->
+    <section id="proizvodi-sekcija" class="page-section skriveno">
+        <h1 id="kategorija-naslov" class="sekcija-naslov">Popularne stvari 🔥</h1>
+        <div id="proizvodi-grid" class="grid-centriran"></div>
+    </section>
+
+    <!-- FAVORITI SEKCIJA -->
+    <section id="favoriti-sekcija" class="page-section skriveno">
+        <h1 class="sekcija-naslov">Tvoji Favoriti ❤️</h1>
+        <div id="favoriti-grid" class="grid-centriran"></div>
+    </section>
+
+    <!-- DETALJI PROIZVODA -->
+    <section id="detalji-sekcija" class="page-section skriveno">
+        <div class="detalji-kontejner">
+            <button class="back-btn" onclick="prikažiPrethodnuSekciju()">← Nazad</button>
+            <div class="detalji-sadrzaj">
+                <div class="detalji-slika-box">
+                    <img id="detalji-slika" src="" alt="">
+                </div>
+                <div class="detalji-info">
+                    <h2 id="detalji-ime"></h2>
+                    <p id="detalji-cena" class="cena-istaknuto"></p>
+                    
+                    <div class="opcija-selekt" style="margin-bottom: 20px;">
+                        <label for="model-select">Izaberi model / varijaciju:</label>
+                        <select id="model-select" onchange="promeniSlikuModela()"></select>
+                    </div>
+
+                    <div class="opcija-selekt">
+                        <label for="velicina">Izaberi veličinu / mililitražu:</label>
+                        <select id="velicina"></select>
+                    </div>
+                    
+                    <button id="dodaj-u-korpu-btn" class="glavno-dugme" style="margin-top: 20px;">Dodaj u korpu</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- KORPA SEKCIJA -->
+    <section id="korpa-sekcija" class="page-section skriveno">
+        <h1 class="sekcija-naslov">Tvoja Korpa</h1>
+        <div id="cartBox" class="korpa-kontejner"></div>
+    </section>
+
+    <!-- PROFIL / LOGIN SEKCIJA -->
+    <section id="profil-sekcija" class="page-section skriveno">
+    <div class="profil-kontejner">
+        
+        <div id="auth-kontejner" class="auth-box">
+            <div class="auth-tabovi">
+                <button id="tab-login-btn" class="tab-btn aktivan-tab" onclick="promeniAuthTab('login')">Prijava</button>
+                <button id="tab-reg-btn" class="tab-btn" onclick="promeniAuthTab('reg')">Registracija</button>
+            </div>
+
+            <div id="forma-login" class="forma-sadrzaj">
+                <h3>Prijavi se na svoj nalog</h3>
+                <input type="text" id="login-korisnik" placeholder="Korisničko ime">
+                <input type="password" id="login-lozinka" placeholder="Lozinka">
+                <button class="glavno-dugme" onclick="prijaviSe()">Uloguj se</button>
+            </div>
+
+            <div id="forma-reg" class="forma-sadrzaj skriveno">
+                <h3>Napravi novi nalog</h3>
+                <input type="text" id="reg-korisnik" placeholder="Izaberi korisničko ime">
+                <input type="email" id="reg-email" placeholder="Unesi Email adresu">
+                <input type="password" id="reg-lozinka" placeholder="Izaberi lozinku">
+                <input type="number" id="reg-balans" placeholder="Početni budžet (€)" value="100">
+                <button class="glavno-dugme" onclick="registrujSe()">Registruj se</button>
+            </div>
+        </div>
+
+        <div id="profil-podaci" class="auth-box skriveno">
+            <h2>Moj Profil</h2>
+            
+            <div class="digitalna-kartica">
+                <div class="kartica-header">
+                    <span>ReSell Hub Wallet</span>
+                    <span class="kartica-cip">📟</span>
+                </div>
+                <div class="kartica-Broj">**** **** **** 2026</div>
+                <div class="kartica-info-red">
+                    <div>
+                        <div class="kartica-oznaka">KORISNIK</div>
+                        <div id="profil-ime" class="kartica-vrednost">Gost</div>
+                    </div>
+                    <div>
+                        <div class="kartica-oznaka">BALANS</div>
+                        <div id="profil-prikaz-balansa" class="kartica-vrednost-cena">0€</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dopuna-sekcija">
+                <h3>Dopuni svoj račun</h3>
+                <p class="dopuna-Opis">Izaberi jedan od brzih iznosa ili unesi željenu vrednost:</p>
+                
+                <div class="brzi-iznosi-grid">
+                    <button onclick="postaviBrzuDopunu(20)">+ 20€</button>
+                    <button onclick="postaviBrzuDopunu(50)">+ 50€</button>
+                    <button onclick="postaviBrzuDopunu(100)">+ 100€</button>
+                </div>
+
+                <div class="Dopuna-unos-box">
+                    <div class="input-valuta-kontejner">
+                        <input type="number" id="dopuna-iznos" placeholder="0.00">
+                        <span class="valuta-oznaka">€</span>
+                    </div>
+                    <button class="glavno-dugme dopuni-btn" onclick="dopuniBalans()">Uplati sredstva</button>
+                </div>
+            </div>
+
+            <button class="remove-btn" style="margin-top: 10px; width: 100%;" onclick="odjaviSe()">Odjavi se</button>
+        </div>
+
+    </div>
+</section>
+
+    <script src="Projekat1.js"></script>
+</body>
+</html>
